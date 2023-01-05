@@ -1,0 +1,36 @@
+@{
+ Layout = "_Layout";
+}
+
+@model DoctorsOffice.Models.Patient;
+@using DoctorsOffice.Models;
+
+<h2>Patient Details</h2>
+
+<h3>Patient: @Html.DisplayFor(model => model.Name)</h3>
+<h3>Birthdate: @Html.DisplayFor(model => model.Birthday)</h3>
+
+@if(@Model.JoinEntities.Count == 0)
+{
+  <p>This patient isn't assigned to any doctors.</p>
+}
+else
+{
+  <h4>Doctors</h4>
+  <ul>
+  @foreach(DoctorPatient join in Model.JoinEntities)
+  {
+    <li>@join.Doctor.Name | @join.Doctor.Specialty</li>
+    @using (Html.BeginForm("DeleteJoin", "Patients"))
+    {
+      @Html.Hidden("joinId", @join.DoctorPatientId)
+      <input type="submit" value="Delete" />
+    }
+  }
+  </ul>
+}
+
+<p>@Html.ActionLink("See a Doctor", "AddDoctor", new { id = Model.PatientId })</p>
+<p>@Html.ActionLink("Edit Patient", "Edit", new { id = Model.PatientId })</p>
+<p>@Html.ActionLink("Delete Patient", "Delete", new { id = Model.PatientId })</p>
+<p>@Html.ActionLink("Back to list", "Index")</p>
